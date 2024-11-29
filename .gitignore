@@ -23,3 +23,9 @@ instance/
 
 # Ignore Flask-Session files
 flask_session/
+
+# Ignore environment-specific files
+.env
+
+# Ignore virtual environment folder
+.venv/
