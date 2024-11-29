@@ -25,8 +25,14 @@ Talisman(app, force_https=False)  # Disable HTTPS forcing for local development
 
 # --- Secure Configuration ---
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'random_777_key!@#')
-app.config['SESSION_TYPE'] = 'redis'
-app.config['SESSION_REDIS'] = Redis(host='redis', port=6379)
+
+# IF you have Redis set up, uncomment the following lines to use Redis for session storage
+# app.config['SESSION_TYPE'] = 'redis'
+# app.config['SESSION_REDIS'] = Redis(host='redis', port=6379)
+
+# For local development without Redis, use filesystem for session storage
+app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem for session storage
+
 app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
 Session(app)

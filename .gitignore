@@ -20,3 +20,6 @@ instance/
 *.log
 *.tmp
 *.bak
+
+# Ignore Flask-Session files
+flask_session/
