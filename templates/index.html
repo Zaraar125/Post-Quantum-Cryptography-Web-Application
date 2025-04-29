@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PQC AES Encryption App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>Post-Quantum Encryption App (Kyber512 + AES)</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <h2>Encrypt a Message</h2>
+        <input type="text" name="message" placeholder="Enter message to encrypt" required>
+        <button name="encrypt" type="submit">Encrypt</button>
+    </form>
+
+    <h3>Encrypted Message (Base64)</h3>
+    <textarea readonly rows="4">{{ encrypted_message }}</textarea>
+
+    <h3>KEM Ciphertext (Base64)</h3>
+    <textarea readonly rows="4">{{ kem_ciphertext }}</textarea>
+
+    <form method="POST">
+        <h2>Decrypt a Message</h2>
+        <input type="text" name="encrypted_message" placeholder="Paste encrypted message" required>
+        <input type="text" name="kem_ciphertext" placeholder="Paste KEM ciphertext" required>
+        <button name="decrypt" type="submit">Decrypt</button>
+    </form>
+
+    <h3>Decrypted Message</h3>
+    <textarea readonly rows="4">{{ decrypted_message }}</textarea>
+</div>
+</body>
+</html>

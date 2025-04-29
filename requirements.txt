@@ -1,0 +1,5 @@
+Flask
+Flask-Talisman
+python-dotenv
+pycryptodome
+pqc
