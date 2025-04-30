@@ -1,5 +1,7 @@
 Flask
 Flask-Talisman
+Flask-Session
 python-dotenv
 pycryptodome
 pypqc
+redis

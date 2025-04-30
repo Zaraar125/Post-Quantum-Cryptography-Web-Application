@@ -1,0 +1,22 @@
+# Ignore Redis data directory
+redis_data/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Flask instance folder (if it exists)
+instance/
+
+# Ignore environment variables file
+.env
+
+# Ignore IDE configurations
+.idea/
+.vscode/
+
+# Ignore any other temporary or build files
+*.log
+*.tmp
+*.bak
