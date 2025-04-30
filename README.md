@@ -25,6 +25,6 @@ A Flask web app demonstrating Post-Quantum Cryptography using Kyber512 (KEM) + A
 
 ## Deployment 
 - PythonAnywhere.com is used for Deployment
-- Link : zaraar.pythonanywhere.com
+- Link : (https://zaraar.pythonanywhere.com/)
 
 ---
