@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from datetime import timedelta
 import base64
 import os
+import warnings
+warnings.filterwarnings('ignore')
 
 # --- Load environment variables ---
 load_dotenv()
@@ -17,7 +19,7 @@ app = Flask(__name__)
 Talisman(app)
 
 # --- Secure Configuration ---
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'supersecretkey')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'random_777_key!@#')
 app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_REDIS'] = Redis(host='redis', port=6379)
 app.config['SESSION_PERMANENT'] = True
