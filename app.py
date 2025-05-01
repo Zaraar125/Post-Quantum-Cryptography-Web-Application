@@ -26,6 +26,10 @@ app.config['SESSION_PERMANENT'] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
 Session(app)
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+
 # --- Helpers ---
 def encode_key(key_bytes):
     return base64.b64encode(key_bytes).decode()
@@ -33,37 +37,32 @@ def encode_key(key_bytes):
 def decode_key(key_str):
     return base64.b64decode(key_str)
 
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     encrypted_message = ''
     decrypted_message = ''
     kem_ciphertext_b64 = ''
-
-    # Key generation via button
-    if request.method == 'POST' and 'generate_keys' in request.form:
-        public_key, secret_key = kemalg.keypair()
-        session['public_key'] = encode_key(public_key)
-        session['secret_key'] = encode_key(secret_key)
-        flash('New keys generated.', 'success')
-        return redirect(url_for('index'))
-
-    # If session keys are not yet generated
-    if 'public_key' not in session or 'secret_key' not in session:
-        public_key, secret_key = kemalg.keypair()
-        session['public_key'] = encode_key(public_key)
-        session['secret_key'] = encode_key(secret_key)
-
-    public_key = decode_key(session['public_key'])
-    secret_key = decode_key(session['secret_key'])
+    public_key_display = ''
+    private_key_display = ''
 
     if request.method == 'POST':
-        if 'encrypt' in request.form:
+        if 'generate_keys' in request.form:
+            public_key, secret_key = kemalg.keypair()
+            session['public_key'] = encode_key(public_key)
+            session['secret_key'] = encode_key(secret_key)
+            session['keys_generated'] = True
+            flash('Key pair generated!', 'success')
+            return redirect(url_for('index'))
+
+        elif 'encrypt' in request.form:
+            if not session.get('keys_generated'):
+                flash('Please generate keys first.', 'danger')
+                return redirect(url_for('index'))
+
             try:
+                public_key = decode_key(session['public_key'])
                 message = request.form['message'].encode()
+
                 shared_secret, kem_ciphertext = kemalg.encap(public_key)
                 aes_key = shared_secret[:32]
                 iv = os.urandom(16)
@@ -73,12 +72,18 @@ def index():
 
                 kem_ciphertext_b64 = base64.b64encode(kem_ciphertext).decode()
                 encrypted_message = base64.b64encode(iv + ciphertext).decode()
+
                 flash('Message encrypted successfully!', 'success')
             except Exception:
                 flash('Encryption failed.', 'danger')
 
         elif 'decrypt' in request.form:
+            if not session.get('keys_generated'):
+                flash('Please generate keys first.', 'danger')
+                return redirect(url_for('index'))
+
             try:
+                secret_key = decode_key(session['secret_key'])
                 encrypted_message_bytes = base64.b64decode(request.form['encrypted_message'])
                 kem_ciphertext_bytes = base64.b64decode(request.form['kem_ciphertext'])
 
@@ -91,16 +96,22 @@ def index():
                 cipher = AES.new(aes_key, AES.MODE_CBC, iv)
                 decrypted_message_bytes = unpad(cipher.decrypt(ciphertext), AES.block_size)
                 decrypted_message = decrypted_message_bytes.decode()
+
                 flash('Message decrypted successfully!', 'success')
-            except Exception:
-                flash('Decryption failed. Please check your inputs.', 'danger')
+            except Exception as e:
+                flash(f'Decryption failed: {str(e)}', 'danger')
+
+    # Show keys only if generated
+    if session.get('keys_generated'):
+        public_key_display = session.get('public_key', '')
+        private_key_display = session.get('secret_key', '')
 
     return render_template('index.html',
-                           public_key=session['public_key'],
-                           secret_key=session['secret_key'],
                            encrypted_message=encrypted_message,
                            decrypted_message=decrypted_message,
-                           kem_ciphertext=kem_ciphertext_b64)
+                           kem_ciphertext=kem_ciphertext_b64,
+                           public_key_display=public_key_display,
+                           private_key_display=private_key_display)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
