@@ -1,61 +1,96 @@
 body {
-    background: #f4f7fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     color: #333;
 }
 
 h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #203a43;
+    margin-bottom: 40px;
 }
 
-.card {
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-}
-
-.card-header {
-    background-color: #ffffff;
-    font-size: 1.1rem;
-    font-weight: 500;
-    border-bottom: 1px solid #e0e0e0;
+h2, h3 {
+    color: #203a43;
+    margin-top: 30px;
 }
 
 textarea, input[type="text"] {
-    resize: none;
-    font-family: monospace;
-    font-size: 0.9rem;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
-textarea:read-only, input[readonly] {
-    background-color: #f0f0f0;
+textarea:focus, input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 button {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+form button[name="generate_key"] {
+    background-color: #28a745;
+    margin-bottom: 20px;
+}
+
+form button[name="generate_key"]:hover {
+    background-color: #1e7e34;
+}
+
+.alert.success {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
     border-radius: 5px;
-    padding: 0.5rem 1.2rem;
-    font-weight: 500;
+    margin-bottom: 10px;
 }
 
-.alert {
+.alert.danger {
+    background-color: #f44336;
+    color: white;
+    padding: 10px;
     border-radius: 5px;
-    padding: 0.75rem 1.25rem;
+    margin-bottom: 10px;
 }
 
-.btn-close {
-    float: right;
-    font-size: 1rem;
-    color: #000;
-}
-
-form {
-    margin-bottom: 0;
-}
-
-label {
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-    color: #444;
+.key-box {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    margin-bottom: 15px;
+    border-left: 4px solid #007bff;
 }
