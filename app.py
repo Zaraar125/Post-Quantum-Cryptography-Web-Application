@@ -10,13 +10,18 @@ from datetime import timedelta
 import base64
 import os
 import warnings
+import logging
 warnings.filterwarnings('ignore')
+
+# --- Logging Setup ---
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # --- Load environment variables ---
 load_dotenv()
 
 app = Flask(__name__)
-Talisman(app)
+Talisman(app, force_https=False)  # Disable HTTPS forcing for local development
 
 # --- Secure Configuration ---
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'random_777_key!@#')
@@ -47,16 +52,22 @@ def index():
 
     if request.method == 'POST':
         if 'generate_keys' in request.form:
-            public_key, secret_key = kemalg.keypair()
-            session['public_key'] = encode_key(public_key)
-            session['secret_key'] = encode_key(secret_key)
-            session['keys_generated'] = True
-            flash('Key pair generated!', 'success')
+            try:
+                public_key, secret_key = kemalg.keypair()
+                session['public_key'] = encode_key(public_key)
+                session['secret_key'] = encode_key(secret_key)
+                session['keys_generated'] = True
+                flash('Key pair generated!', 'success')
+                logger.info('Key pair generated successfully.')
+            except Exception as e:
+                logger.exception('Key generation failed')
+                flash('Key generation failed.', 'danger')
             return redirect(url_for('index'))
 
         elif 'encrypt' in request.form:
             if not session.get('keys_generated'):
                 flash('Please generate keys first.', 'danger')
+                logger.warning('Encryption attempted without keys.')
                 return redirect(url_for('index'))
 
             try:
@@ -74,12 +85,16 @@ def index():
                 encrypted_message = base64.b64encode(iv + ciphertext).decode()
 
                 flash('Message encrypted successfully!', 'success')
-            except Exception:
-                flash('Encryption failed.', 'danger')
+                logger.info('Encryption successful.')
+                
+            except Exception as e:
+                logger.exception('Encryption failed')
+                flash('Encryption failed. Please check your input or try again.', 'danger')
 
         elif 'decrypt' in request.form:
             if not session.get('keys_generated'):
                 flash('Please generate keys first.', 'danger')
+                logger.warning('Decryption attempted without keys.')
                 return redirect(url_for('index'))
 
             try:
@@ -98,8 +113,11 @@ def index():
                 decrypted_message = decrypted_message_bytes.decode()
 
                 flash('Message decrypted successfully!', 'success')
+                logger.info('Decryption successful.')
+
             except Exception as e:
-                flash(f'Decryption failed: {str(e)}', 'danger')
+                logger.exception('Decryption failed')
+                flash('Decryption failed. Please check your input or try again.', 'danger')
 
     # Show keys only if generated
     if session.get('keys_generated'):
