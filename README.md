@@ -386,5 +386,6 @@ For questions or issues regarding this project, please refer to the application 
 
 ---
 
-**Last Updated**: December 2025
-**Status**: Active Development
+**Last Updated**: Feb 2025
+
+**Status**: No Active Development
