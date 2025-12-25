@@ -185,24 +185,6 @@ docker-compose up --build
 
 ---
 
-## Demo Video
-
-A comprehensive demo video showcasing the application in action:
-
-<video width="100%" height="auto" controls>
-  <source src="Demo_Video_PythonAnywhere/demo_video_information_security_project.mp4" type="video/mp4">
-  Your browser does not support the video tag. Please download the video from Demo_Video_PythonAnywhere/demo_video_information_security_project.mp4
-</video>
-
-**What the Video Demonstrates:**
-- Generating cryptographic keypairs using Kyber512
-- Encrypting messages with Kyber512 + AES-256 hybrid encryption
-- Decrypting messages and recovering plaintext
-- Real-world usage of the web application interface
-- Post-quantum cryptography in practice
-
----
-
 ## Technical Details
 
 ### Kyber512 Algorithm Details
